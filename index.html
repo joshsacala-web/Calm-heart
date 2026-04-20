@@ -1,52 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Calm Your Heart</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: radial-gradient(circle, #0f172a, #020617);
+  color: white;
+}
+
+.container {
+  margin-top: 60px;
+}
+
+#heartWrapper {
+  width: 150px;
+  margin: 40px auto;
+  position: relative;
+}
+
+svg {
+  width: 100%;
+}
+
+#fillRect {
+  transition: height 4s ease-in-out, fill 4s ease-in-out;
+}
+
+button {
+  padding: 12px 24px;
+  font-size: 18px;
+  background: #ff4d6d;
+  border: none;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  margin: 5px;
+}
+
+#text {
+  font-size: 20px;
+  margin-top: 10px;
+}
+
+.controls {
+  margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Calm Your Heart</h2>
+
+  <div id="heartWrapper">
+    <svg viewBox="0 0 100 100">
+      <defs>
+        <clipPath id="heartClip">
+          <path d="M50 90 L20 60 A20 20 0 1 1 50 30 A20 20 0 1 1 80 60 Z"/>
+        </clipPath>
+      </defs>
+
+      <!-- Fill -->
+      <rect id="fillRect" x="0" y="100" width="100" height="0"
+            fill="#ff4d6d" clip-path="url(#heartClip)"/>
+
+      <!-- Outline -->
+      <path d="M50 90 L20 60 A20 20 0 1 1 50 30 A20 20 0 1 1 80 60 Z"
+            fill="none" stroke="#ff4d6d" stroke-width="3"/>
+    </svg>
+  </div>
+
+  <p id="text">Press Start</p>
+
+  <button onclick="startBreathing()">Start</button>
+
+  <div class="controls">
+    <button onclick="toggleSound()">Toggle Sound</button><br><br>
+    Volume:
+    <input type="range" min="0" max="1" step="0.05" value="0.5" id="volumeSlider">
+  </div>
+</div>
+
 <script>
 const fillRect = document.getElementById("fillRect");
 const text = document.getElementById("text");
-const sound = document.getElementById("sound");
 const volumeSlider = document.getElementById("volumeSlider");
 
 let soundOn = true;
-
-// ✅ SET INITIAL VOLUME
-sound.volume = volumeSlider.value;
-
-// ✅ UPDATE VOLUME LIVE
-volumeSlider.addEventListener("input", () => {
-  sound.volume = volumeSlider.value;
-  console.log("Volume:", sound.volume);
-});
+let audioCtx;
+let gainNode;
 
 function toggleSound() {
   soundOn = !soundOn;
+}
 
-  if (!soundOn) {
-    sound.pause();
+volumeSlider.addEventListener("input", () => {
+  if (gainNode) {
+    gainNode.gain.value = volumeSlider.value;
   }
+});
+
+function playTone(freq, duration) {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    gainNode = audioCtx.createGain();
+    gainNode.connect(audioCtx.destination);
+  }
+
+  const osc = audioCtx.createOscillator();
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+  gainNode.gain.setValueAtTime(volumeSlider.value, audioCtx.currentTime);
+
+  osc.connect(gainNode);
+  osc.start();
+  osc.stop(audioCtx.currentTime + duration);
 }
 
 function startBreathing() {
-  sound.currentTime = 0;
-  sound.volume = volumeSlider.value;
-
-  if (soundOn) {
-    sound.play().catch(() => {});
-  }
 
   function inhale() {
     text.innerText = "Breathe in...";
-    
+
     fillRect.setAttribute("y", "0");
     fillRect.setAttribute("height", "100");
     fillRect.setAttribute("fill", "#ff4d6d");
+
+    if (soundOn) playTone(220, 4);
 
     setTimeout(exhale, 4000);
   }
 
   function exhale() {
     text.innerText = "Breathe out...";
-    
+
     fillRect.setAttribute("y", "100");
     fillRect.setAttribute("height", "0");
     fillRect.setAttribute("fill", "#4dabf7");
+
+    if (soundOn) playTone(140, 6);
 
     setTimeout(inhale, 6000);
   }
@@ -54,3 +153,6 @@ function startBreathing() {
   inhale();
 }
 </script>
+
+</body>
+</html>
