@@ -9,7 +9,7 @@ body {
   margin: 0;
   font-family: Arial;
   text-align: center;
-  background: radial-gradient(circle, #0f172a, #020617);
+  background: #0f172a;
   color: white;
 }
 
@@ -37,7 +37,6 @@ svg {
   background: #ff4d6d;
   opacity: 0.6;
   transition: height 4s ease-in-out;
-  border-radius: 50%;
 }
 
 button {
@@ -70,22 +69,38 @@ button {
   </div>
 
   <p id="text">Press Start</p>
-  <button onclick="startBreathing()">Start</button>
+  <button id="startBtn">Start</button>
 </div>
 
-<audio id="sound">
-  <source src="https://www.soundjay.com/human/sounds/deep-breath-1.mp3">
+<audio id="sound" preload="auto">
+  <source src="https://www.soundjay.com/human/sounds/deep-breath-1.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-let heart = document.getElementById("heart");
-let fill = document.getElementById("fill");
-let text = document.getElementById("text");
-let sound = document.getElementById("sound");
+const heart = document.getElementById("heart");
+const fill = document.getElementById("fill");
+const text = document.getElementById("text");
+const sound = document.getElementById("sound");
+const btn = document.getElementById("startBtn");
 
-function startBreathing() {
-  // ensure sound plays after click
+btn.addEventListener("click", () => {
+  console.log("Button clicked");
+
+  // try to play sound
   sound.currentTime = 0;
-  sound.play().catch(() => {});
+  sound.play().catch(err => {
+    console.log("Audio blocked:", err);
+  });
 
-  function
+  function inhale() {
+    text.innerText = "Breathe in...";
+    heart.style.transform = "scale(1.3)";
+    fill.style.height = "100%";
+    setTimeout(exhale, 4000);
+  }
+
+  function exhale() {
+    text.innerText = "Breathe out...";
+    heart.style.transform = "scale(1)";
+    fill.style.height = "0%";
+    set
