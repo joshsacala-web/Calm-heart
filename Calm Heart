@@ -1,0 +1,40 @@
+index.html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Calm Your Heart</title>
+<style>
+body {
+  text-align: center;
+  font-family: Arial;
+  background: #111;
+  color: white;
+}
+
+#heart {
+  font-size: 80px;
+  margin: 20px;
+  transition: 3s;
+}
+
+button {
+  padding: 12px 20px;
+  font-size: 18px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Calm Your Heart</h2>
+
+<div id="heart">❤️</div>
+<p id="text">Press Start</p>
+
+<button onclick="startBreathing()">Start</button>
+
+<script>
+function startBreathing() {
+  let text = document.getElementById("text");
+  let
