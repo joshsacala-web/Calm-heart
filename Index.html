@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Calm Your Heart</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: radial-gradient(circle, #1a1a2e, #0f0f1a);
+      color: #e0e0e0;
+    }
+
+    .container {
+      margin-top: 50px;
+    }
+
+    #heartContainer {
+      width: 160px;
+      margin: 40px auto;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+    }
+
+    #heart {
+      fill: #ff4d6d;
+      transform-origin: center;
+      transform: scale(1);
+      transition: transform 4s ease-in-out;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #ff4d6d;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Calm Your Heart</h1>
+
+  <div id="heartContainer">
+    <svg viewBox="0 0 100 100">
+      <path id="heart" d="M50 90 L20 60 A20 20 0 1 1 50 30 A20 20 0 1 1 80 60 Z"></path>
+    </svg>
+  </div>
+
+  <button onclick="startBreathing()">Start Breathing</button>
+</div>
+
+<script>
+  let heart = document.getElementById("heart");
+  let inhaleTime = 4000;
+  let exhaleTime = 6000;
+
+  function startBreathing() {
+    breatheIn();
+  }
+
+  function breatheIn() {
+    heart.style.transform = "scale(1.3)";
+    setTimeout(breatheOut, inhaleTime);
+  }
+
+  function breatheOut() {
+    heart.style.transform = "scale(1)";
+    setTimeout(breatheIn, exhaleTime);
+  }
+</script>
+
+</body>
+</html>
